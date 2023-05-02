@@ -1,0 +1,48 @@
+{% extends 'base_dashboard.html' %}
+
+{% block content %}
+    <h1>Update Ledger Record</h1>
+    <form method="post" action="/ledger-list" >
+        {% csrf_token %}
+        <div class="sales-details" style="display: block;">
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="date">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" value="{{ vehicle_obj.date }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="vehicle_id">Vehicle Number</label>
+                  <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" placeholder="HR35AS1234" value="{{vehicle_obj.vehicle_id}}" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                  <label for="company_id">Company Name</label>
+                  <input type="text" class="form-control" id="company_id" name="company_id" placeholder="ABC Company" value="{{company_obj.name}}" required>
+              </div>
+              <!-- <div class="col-md-4 mb-3">
+                  <label for="added_by">Added By</label>
+                  <input type="text" class="form-control" id="added_by" name="added_by" placeholder="John Doe" value="{{added_by_obj.username}}" required>
+              </div> -->
+                <div class="col-md-4 mb-3">
+                    <label for="vehicle_id">Vehicle ID</label>
+                    <input type="text" class="form-control" id="vehicle_id" name="vehicle_id" value="{{ vehicle_obj.vehicle_id }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="company_id">Company ID</label>
+                    <input type="text" class="form-control" id="company_id" name="company_id" value="{{ vehicle_obj.company_id }}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="total_amount">Total Amount</label>
+                    <input type="text" class="form-control" id="total_amount" name="total_amount" value="{{ vehicle_obj.total_amount }}" required>
+                </div>
+                <!-- <div class="col-md-4 mb-3">
+                    <label for="user">User</label>
+                    <input type="text" class="form-control" id="user" name="user" value="{{ vehicle_obj.user }}" required>
+                </div> -->
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+    </form>
+{% endblock %}
+

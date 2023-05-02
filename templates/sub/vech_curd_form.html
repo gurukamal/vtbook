@@ -1,0 +1,27 @@
+<div class="recent-sales box" style="width: 100%;">
+    <h5>{% if vechRegUpdateObj %} Update for <b><u>{{vechRegUpdateObj.vehicle_number}}</u></b> {% else %} Create New {% endif %}</h5>
+    {% if vechRegUpdateObj %}
+        <form method="POST" action="/update-vehicle-record/{{vechRegUpdateObj.id}}">
+    {% else %}
+        <form method="POST" action="/create-new-vehicle-record">
+    {% endif %}
+        {% csrf_token %}
+        <div class="sales-details" style="display: block;">
+            <div class="form-row">                
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Vehcile Number</label>
+                    <input type="text" class="form-control" id="vehicle_number" name="vehicle_number" placeholder="HR35AS1234" value="{{vechRegUpdateObj.vehicle_number}}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Party Name</label>
+                    <input type="text" class="form-control" id="driver_name" name="driver_name" placeholder="abcd" value="{{vechRegUpdateObj.driver_name}}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Driver Mobile</label>
+                    <input type="text" class="form-control" id="driver_mobile" name="driver_mobile" placeholder="1234567890" value="{{vechRegUpdateObj.driver_mobile}}" required>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">{% if vechRegUpdateObj %} Update {% else %}Save {% endif %}</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,126 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+    <head>
+        <style type="text/css">
+            body{
+                font-family: arial;
+                margin: 10px 10px 10px 10px;
+                border: 1px solid;
+            }
+            .image_div{
+                display: flex;
+                justify-content: space-around;
+            }
+            .imagecss{
+                height: 60px;
+                margin-top: 20px;
+            }
+            .table_div{
+                display: flex;
+                justify-content: center;
+                margin-top: 25px;
+            }
+            .header_table_details{
+                padding: 0px 15px 0px 15px;
+            }
+            tr{
+                margin-bottom:200px;
+            }
+            .txn_table{
+                width: 100%;
+                border: 1px solid black;
+            }
+            
+        </style>
+    </head>
+    <body style="">
+        <div class="image_div">
+            {% comment %} <img src="{% static '/images/vtlogo.png' %}" class="rounded" alt="logo" style="height: 60px;margin-top: 20px;"> {% endcomment %}
+            <img class="imagecss" src="static/images/vtlogo.png" class="rounded" alt="logo" style="">
+        </div>
+        <div style="" class="table_div"> 
+            <table>
+                    <tr style="">
+                        <td style="margin-bottom:20px;">1Mark</td>
+                        <td class="header_table_details">:</td>
+                        <td>Otto</td>
+                    </tr>
+                    <tr>
+                        <td>Mark</td>
+                        <td class="header_table_details">:</td>
+                        <td>ThorntonThorntonThorntonThornton</td>
+                    </tr>
+                    <tr>
+                        <td>Mark</td>
+                        <td class="header_table_details">:</td>
+                        <td>ThorntonThorntonThorntonThornton</td>
+                    </tr>
+                    <tr>
+                        <td>Mark</td>
+                        <td class="header_table_details">:</td>
+                        <td>ThorntonThorntonThorntonThornton</td>
+                    </tr>
+                    <tr>
+                        <td>Mark</td>
+                        <td class="header_table_details">:</td>
+                        <td>ThorntonThorntonThorntonThornton</td>
+                    </tr>
+                    <tr>
+                        <td>Mark</td>
+                        <td class="header_table_details">:</td>
+                        <td>ThorntonThorntonThorntonThornton</td>
+                    </tr>
+            </table>
+        </div>
+
+        <div style="margin: 50px 45px 0 45px;">
+            <table class="txn_table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Vehicle Number</th>
+                    <th scope="col">Company Name</th>
+                    <th scope="col">Driver Name</th>
+                    <th scope="col">Total Amount</th>
+                    <th scope="col">Received</th>
+                    <th scope="col">Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@fat</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Larry the Bird</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@twitter</td>
+                    <td>@twitter</td>
+                  </tr>
+                </tbody>
+              </table>
+        <div>
+    </body>
+</html>

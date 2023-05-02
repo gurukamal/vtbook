@@ -1,0 +1,272 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block css %}
+    <style>
+        .home-content .sales-boxes .recent-sales {
+            width: 100%;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block content %}
+    <div class="sales-boxes" id="" style="margin-bottom: 20px;">
+        <div class="recent-sales box" style="width: 100%;">
+            <h5>Details Ledger/Payment of  {{vehicle_obj.vehicle.vehicle_number}} in {{vehicle_obj.company.company_name}} <span style="margin-left: 55px;" onclick="#"></h5>
+            <div style="display: flex;justify-content: flex-start;">
+                <div class=" col-md-6">
+                    <table class="table table-sm table-bordered table-hover">
+                        <tr>
+                            <td>Vehcile Number</td>
+                            <td>{{vehicle_obj.vehicle.vehicle_number}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Date</td>
+                            <td>{{vehicle_obj.date}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Company</td>
+                            <td>{{vehicle_obj.company.company_name}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Record Added on</td>
+                            <td>{{vehicle_obj.create_at}}</td>
+                        </tr>
+
+                        {% comment %} <tr>
+                            <td>Payment</td>
+                            <td>{{vehicle_obj.total_amount}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Balance</td>
+                            <td>{{vehicle_obj.vehicle}}</td>
+                        </tr> {% endcomment %}
+                        
+                    </table>
+                </div>
+
+                <div style="" class="col-md-6">
+                    {% comment %} <p style="font-size: 25px;">Total Payment : {{vehicle_obj.total_amount}}</p>
+                    <p style="font-size: 25px;">Received Payment : {{vehicle_obj.total_amount}}</p>
+                    <hr>
+                    <p style="font-size: 25px;">Balance : {{vehicle_obj.total_amount}}</p> {% endcomment %}
+                    <table class="table table-sm table-bordered table-hover" style="font-size: 25px;">
+                        <tr>
+                            <td style="text-align: left;">Total Credit Amount: </td>
+                            <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                              </svg> {{total_txn_amount}}</td>
+                        </tr>
+
+                        <tr>
+                            <td style="text-align: left;">Total Expense Amount: </td>
+                            <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                              </svg> {{total_txn_amount_dbt}}</td>
+                        </tr>
+                        
+                        <tr style="border-top: 1px solid;background-color: aquamarine;">
+                            <td style="text-align: left;">Balance: </td>
+                            <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                              </svg> {{balance}}</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+            </div>
+        </div>      
+    </div>
+
+
+    <div class="sales-boxes" id="show_transcation_form" style="margin-bottom: 20px;">
+    </div>
+
+    <div class="sales-boxes">
+        <div class="recent-sales box" style="background-color: aliceblue;">
+            <div class="title" style="display: flex;justify-content: space-between;margin-bottom: 15px;">
+                <div>Update Record</div>
+                <div style="display:flex;">
+                    <div style="display:flex;background-color: gainsboro;padding-top: 0px;margin-left: 0px;">
+                        {% comment %} {% if balance != 0 %}
+                            <button class="btn btn-primary" onclick="showTxnDetailsForm()">+Add</button>
+                        {% endif %} {% endcomment %}
+                    </div>
+                </div>
+            </div>
+            <div class="sales-details">
+                <form class="form-row col-md-12" method="POST" action="/ledger/{{vehicle_obj.uuid}}/update/">
+                    {% csrf_token %}
+                        <div class="col-md-2 mb-3">
+                            <label for="product_token">Date</label>
+                            <input type="date" class="form-control" id="ufdate" value="{{vehicle_obj.date|date:"Y-m-d" }}" name="ufdate" placeholder="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="product_token">Vehicle</label>
+                            <select class="form-control selectpicker" id="uvehicle" name="uvehicle" data-live-search="true">
+                                {% for i in vechRegObj %}
+                                    <option value="{{i.id}}" {% if vehicle_obj.vehicle.id == i.id %} selected {% endif %}>{{i.vehicle_number}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="product_token">Company </label>
+                            {% comment %} <input type="text" class="form-control" id="company_address" name="company_address" placeholder="abcd" value="{{compRegUpdateObj.company_address}}" required> {% endcomment %}
+                            <select class="form-control selectpicker" id="ucompany" name="ucompany" data-live-search="true">
+                                {% for i in company_obj %}
+                                    <option value="{{i.id}}" {% if vehicle_obj.company.id == i.id %} selected {% endif %}>{{i.company_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% comment %} <div class="col-md-2 mb-3">
+                            <label for="product_token">Amount</label>
+                            <input type="number" class="form-control" id="uamoount" name="uamoount" placeholder="" value="{{vehicle_obj.total_amount}}" required>
+                        </div> {% endcomment %}
+                        <div class="col-md-2 mb-3" style="align-items: end;display: flex;justify-content: flex-end;padding-bottom: 4px;">
+                            <button class="btn btn-primary" type="submit">Update</button>
+                        </div>
+                        
+                </form> 
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="sales-boxes">
+        <div class="recent-sales box">
+        <div class="title" style="display: flex;justify-content: space-between;margin-bottom: 15px;">
+            <div>Transcation Statement Details</div>
+            <div style="display:flex;">
+                <div class="sales-boxes" id="cat_edit_upadte_box" style="margin-bottom: 0px;margin-right: 40px;justify-content: flex-end;">
+                    <a href="/ledger-details/print-sample/d/{{vehicle_obj.uuid}}" target="__BLANK__" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-pdf" viewBox="0 0 16 16">
+                        <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+                        <path d="M4.603 12.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.701 19.701 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.187-.012.395-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.065.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.716 5.716 0 0 1-.911-.95 11.642 11.642 0 0 0-1.997.406 11.311 11.311 0 0 1-1.021 1.51c-.29.35-.608.655-.926.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.27.27 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.647 12.647 0 0 1 1.01-.193 11.666 11.666 0 0 1-.51-.858 20.741 20.741 0 0 1-.5 1.05zm2.446.45c.15.162.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.881 3.881 0 0 0-.612-.053zM8.078 5.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z"/>
+                    </svg>Download PDF</a>
+                </div>
+                <div style="display:flex;background-color: gainsboro;padding-top: 0px;margin-left: 0px;">
+                    {% comment %} {% if balance != 0 %} {% endcomment %}
+                        <button class="btn btn-primary" onclick="showTxnDetailsForm()">+Add</button>
+                    {% comment %} {% endif %} {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <div class="sales-details">
+            
+            <table class="table table-sm table-bordered table-hover">
+                <thead>
+                    <tr style="text-align:center">
+                        <th scope="col">#</th>
+                        <th scope="col">Added on </th>
+                        <th scope="col">Txn Date</th>
+                        <th scope="col">Txn Mode</th>
+                        <th scope="col">Txn Type</th>
+                        <th scope="col">Dr Amount</th>
+                        <th scope="col">Cr Amount</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">Remark</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in paymentLogObj %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td scope="row">{{i.create_at}}</td>
+                            <td>{{i.date}}</td>
+                            <td>{{i.get_mode_display}}</td>
+                            <td>{{i.get_type_display}}</td>
+                            {% if i.dbt_amount == 0.0 %}
+                                <td>--</td>
+                            {% else %}
+                                <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                    <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                                  </svg> {{i.dbt_amount}}</td>
+                            {% endif %}
+                            {% if i.crt_amount == 0.0 %}
+                                <td>--</td>
+                            {% else %}
+                                <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                    <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                                  </svg> {{i.crt_amount}}</td>
+                            {% endif %}
+                            <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                              </svg> {{i.balance}}</td>
+                            <td>{{i.remark}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    <br>
+    
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script>
+        
+        function showTxnDetailsForm(){
+            $.ajax({
+                type: "GET",
+                url: "/sub-html/vt-book/v1/add-txn-form",
+                data: {},
+                success: function (data) {
+                    $("#show_transcation_form").html(data)
+                    $("#errorMsg").hide();
+                    $("#errorMsg2").hide();
+                    return false;
+                },
+                error: function (data) {
+                    alert("Internal Server Error!!!");
+                },
+            });
+        }
+
+        function saveNewTxnDetails(){
+            var date = $("#date").val(); 
+            var txn_mode = $("#txn_mode").val(); 
+            var amount = $("#amount").val(); 
+            var remark = $("#remark").val(); 
+            var txn_type = $('input[name="fav_language"]:checked').val();
+            
+            data={"date":date,"txn_mode":txn_mode,"amount":amount,"remark":remark,"uuid":"{{vehicle_obj.uuid}}","txn_type":txn_type}
+            if(date && txn_mode && amount && remark){
+                if ( ! $("#fav_language").is(":checked")) {
+                    $("#errorMsg2").show()
+                    $("#errorMsg").hide();
+                 }
+                //if(txn_type.length<1){
+                //    $("#errorMsg2").show()
+                //    $("#errorMsg").hide();
+                //}
+
+                $("#errorMsg").hide();
+                $.ajax({
+                    type: "GET",
+                    url: "/sub-html/vt-book/v1/add-new-txn-details",
+                    data: data,
+                    success: function (data) {
+                        location.reload();
+                        return false;
+                    },
+                    error: function (data) {
+                        alert("Internal Server Error!!!");
+                    },
+                });
+            }else{
+                $("#errorMsg").show();
+            }
+        }
+    </script>
+{% endblock content %}

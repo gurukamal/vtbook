@@ -1,0 +1,47 @@
+
+<div class="recent-sales box" style="width: 100%;">
+    <h5>Create New  Ledger</h5>
+    
+    <form method="POST" action="/create-new-ledger">
+        {% csrf_token %}
+        <div class="sales-details" style="display: block;">
+            <div class="form-row">                
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Date</label>
+                    <input type="date" class="form-control" id="fdate" name="fdate" placeholder="" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    {% comment %} <input type="date" class="form-control" id="fdate" name="fdate" placeholder="" required> {% endcomment %}
+                </div>
+            </div>
+
+            <div class="form-row">                
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Vehicle</label>
+                    <select class="form-control selectpicker" id="vehicle" name="vehicle" data-live-search="true">
+                        {% for i in vechRegObj %}
+                            <option value="{{i.id}}">{{i.vehicle_number}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Company </label>
+                    {% comment %} <input type="text" class="form-control" id="company_address" name="company_address" placeholder="abcd" value="{{compRegUpdateObj.company_address}}" required> {% endcomment %}
+                    <select class="form-control selectpicker" id="company" name="company" data-live-search="true">
+                        {% for i in company_obj %}
+                            <option value="{{i.id}}">{{i.company_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            {% comment %} <div class="form-row">                
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Totol Payment</label>
+                    <input type="number" class="form-control" id="amount" name="amount" placeholder="" required>
+                </div>
+            </div> {% endcomment %}
+            <button class="btn btn-primary" type="submit">{% if compRegUpdateObj %} Update {% else %}Save {% endif %}</button>
+        </div>
+    </form>
+</div>

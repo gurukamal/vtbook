@@ -1,0 +1,213 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+    .sales-boxes .top-sales li .product, .price {
+        font-size: 11px;
+        font-weight: 400;
+        color: #333;
+    }
+</style>
+{% endblock css %}
+
+
+{% block content %}
+<div class="overview-boxes">
+    <div class="box">
+        <div class="right-side">
+            <div class="box-topic">Total Vehicle</div>
+            <div class="number">{{ count }}</div>
+            <div class="indicator">
+                <i class='bx bx-up-arrow-alt'></i>
+                <span class="text">Up from yesterday</span>
+            </div>
+        </div>
+        <i class='bx bx-cart-alt cart'></i>
+    </div>
+    <div class="box">
+        <div class="right-side">
+            <div class="box-topic">Today Company</div>
+            <div class="number">{{ company_count }}</div>
+            <div class="indicator">
+                <i class='bx bx-up-arrow-alt'></i>
+                <span class="text">Up from yesterday</span>
+            </div>
+        </div>
+        <i class='bx bxs-cart-add cart two' ></i>
+    </div>
+    <div class="box">
+        <div class="right-side">
+            <div class="box-topic">Total Records</div>
+            <div class="number">{{ ledger_count }}</div>
+            <div class="indicator">
+                <i class='bx bx-down-arrow-alt down'></i>
+                <span class="text">Down From Today</span>
+            </div>
+        </div>
+        <i class='bx bxs-cart-download cart four' ></i>
+    </div>
+    <div class="box">
+        <div class="right-side">
+            <div class="box-topic">Amount Pending Count</div>
+            <div class="number">0</div>
+            <div class="indicator">
+                <i class='bx bx-up-arrow-alt'></i>
+                <span class="text">Up from yesterday</span>
+            </div>
+        </div>
+        <i class='bx bx-cart cart three' ></i>
+    </div>
+    
+</div>
+
+{% comment %} <div class="sales-boxes">
+    <div class="recent-sales box col-md-11">
+    <div class="title" style="display: flex;justify-content: space-between;">
+        <div>Recent Records</div>
+        <div>
+            <select class="form-control" id="recent_sales" name="recent_sales" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                <option value="" disabled>Select Status</option>
+                <option value="all" {% if not request.GET.rf_status == "" %}selected{% endif %}>All</option>
+                <option value="3" {% if request.GET.rf_status == "3" %}selected{% endif %}>Confirmed</option>
+                <option value="1" {% if request.GET.rf_status == "1" %}selected{% endif %}>Received</option>
+            </select>
+        </div>
+    </div>
+    <div class="sales-details">
+        <table class="table table-sm table-bordered table-hover">
+            
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Vehicle Number </th>
+                    <th scope="col">Driver Name </th>
+                    <th scope="col">View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in vechRegObj %}
+                    <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{i.create_at}}</td>
+                        <td>{{i.vehicle_number}}</td>
+                        <td>{{i.driver_name}} </td>
+                        <td><a href="{% url 'vehicle_book_details' i.id %}">View Order</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+    <div class="button">
+        <a href="/vehicle-book">See All</a>
+    </div>
+    </div>
+    
+</div> {% endcomment %}
+
+<br>
+{% comment %} <div class="sales-boxes" id="return_order_box">
+    <div class="recent-sales box col-md-11" >
+    <div class="title" style="display: flex;justify-content: space-between;">
+        <div>Return Order</div>
+        <div>
+            <select class="form-control" id="return_order" name="return_order" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                <option value="" disabled>Select Status</option>
+                <option value="all">All</option>
+                <option value="1" {% if request.GET.ro_status == "1" %}selected{% endif %}>Received</option>
+                <option value="2" {% if request.GET.ro_status == "2" %}selected{% endif %}>Confirmed</option>
+                <option value="3" {% if request.GET.ro_status == "3" %}selected{% endif %}>Cencel</option>
+                <option value="4" {% if request.GET.ro_status == "4" %}selected{% endif %}>Complete</option>
+            </select>
+        </div>
+    </div>
+    <div class="sales-details">
+        <table class="table table-sm table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Sell Id</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Name/Mobile </th>
+                    <th scope="col">Status </th>
+                    <th scope="col">View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in return_order_obj %}
+                    <tr style="background-color:{% if i.order_status == 1 %} #e04d4d94 {% elif i.order_status == 2 %} #9acd3269 {% elif i.order_status == 3 %} red {% elif i.order_status == 4 %} #f2f21699 {% endif %}; color:{% if i.order_status == 2 %} black {% elif i.order_status == 3 %} white {% elif i.order_status == 4 %} black {% endif %}">
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td scope="row" title="{{i.order_product_detail.sell_order.order_uid}}">{{i.order_product_detail.sell_order.id}}</td>
+                        <td>{{i.create_on}}</td>
+                        <td>{{i.user.first_name}}-{% if i.user.mobile %}{{i.user.mobile}}{% else %} N/A {% endif %}</td>
+                        <td>{{i.get_order_status_display}}</td>
+                        <td><a href="/cirql-management/return-order-details/{{i.return_id}}" style="color: {% if i.order_status == 3 %} white {% endif %}">View Return</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+    <div class="button">
+        <a href="/cirql-management/return-list">See All</a>
+    </div>
+    </div>
+</div> {% endcomment %}
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+<script>
+    function removeParam(key, sourceURL) {
+        var rtn = sourceURL.split("?")[0],
+            param,
+            params_arr = [],
+            queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+        if (queryString !== "") {
+            params_arr = queryString.split("&");
+            for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+                param = params_arr[i].split("=")[0];
+                if (param === key) {
+                    params_arr.splice(i, 1);
+                }
+            }
+            if (params_arr.length) rtn = rtn + "?" + params_arr.join("&");
+        }
+        return rtn;
+    }
+
+    $('#recent_sales').on('change', function() {
+        //alert(this.value);
+        var curl = window.location.href
+        var curl = removeParam("rf_status", curl);
+        if(this.value != "all"){
+            if(curl.includes("?")){
+                curl = curl+"&rf_status="+this.value;
+            }else{
+                curl = curl+"?rf_status="+this.value;
+            };
+        };
+        curl = curl.replace("#return_order_box","")
+        window.location.href = curl
+    });
+
+    $('#return_order').on('change', function() {
+        //alert(this.value);
+        var curl = window.location.href
+        var curl = removeParam("ro_status", curl);
+        if(this.value != "all"){
+            if(curl.includes("?")){
+                curl = curl+"&ro_status="+this.value+"#return_order_box";
+            }else{
+                curl = curl+"?ro_status="+this.value+"#return_order_box";
+            };
+        };
+        window.location.href = curl
+    });
+    
+</script>
+{% endblock content %}

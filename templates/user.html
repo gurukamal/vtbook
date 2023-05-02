@@ -1,0 +1,198 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block css %}
+    <style>
+        .home-content .sales-boxes .recent-sales {
+            width: 100%;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block content %}
+    <div class="sales-boxes">
+        <div class="recent-sales box">
+        <div class="title" style="display: flex;justify-content: space-between;">
+            <div>Users List</div>
+            <div style="display:flex;">
+                {% comment %} <form style="display: flex;" action="" method="GET">
+                    <input type="text" class="form-control" name="order_id" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;    margin-left: -15px;" {% if order_id %} value="{{order_id}}"  {% else %} value="order_" {% endif %} >
+                    <button type="submit" hidden></button>
+                </form>
+                <div>
+                    <select class="form-control" id="recent_sales" name="recent_sales" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                        <option value="" disabled>Select Status</option>
+                        <option value="all" {% if not request.GET.rf_status == "" %}selected{% endif %}>All</option>
+                        <option value="3" {% if request.GET.rf_status == "3" %}selected{% endif %}>Confirmed</option>
+                        <option value="1" {% if request.GET.rf_status == "1" %}selected{% endif %}>Received</option>
+                    </select>
+                </div> {% endcomment %}
+                <!-- <form style="display:flex;background-color: gainsboro;padding-top: 3px;margin-left: 15px;">
+                    <span style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">From </span><input required type="date" name="from_date" id="from_date" class="form-control" value="{{fd|date:'Y-m-d'}}" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                    <span style="height: 30px;font-size: 15px;padding-left: 20px;padding-right: 5px;width: 65%;">To </span><input required type="date" name="to_date" id="to_date" class="form-control" value="{{td|date:'Y-m-d'}}"  style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                    <button type="button" class="btn btn-primary" style="margin-left: 15px;height: 30px;font-size: 15px;padding-top: 2px;" onclick="applydatefilter()">Apply</button>
+                </form> -->
+            </div>
+        </div>
+        <div class="sales-details">
+            
+            <table class="table table-sm table-bordered table-hover">
+                <thead>
+                    <tr style="text-align:center">
+                        <th scope="col">Sr No</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in userObj %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td scope="row">{{i.first_name}}</td>
+                            <td>{{i.last_name}}</td>
+                            <td>{{i.username}}</td>
+                            <td>{{i.mobile}}</td>
+                            <td>{{i.email}}</td>
+                            <td>
+                                <a href="#" onclick="getCategoryDetails('{{i.id}}')">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="" style="position: inherit;justify-content: flex-end;width:100%;">
+            <ul class="pagination">
+                {% if order.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" tabindex="-1">First</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript:void(0)" tabindex="-1">First</a>
+                    </li>
+                {% endif %}
+
+                {% for i in order.paginator.page_range %}
+                    {% if order.number == i %}
+                        <li class="page-item">
+                            <a href="" class="page-link" style="background-color: #424299c9;color: white;">{{i}}</a>
+                        </li>
+                    {% elif i > order.number|add:'-5' and i < order.number|add:'5' %}
+                        <li class="page-item">
+                            <a href="?{{ request.GET.urlencode }}&page={{i}}" class="page-link" >{{i}}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if order.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{order.paginator.num_pages}}">Last</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript:void(0)">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+        {% comment %} <div class="button">
+            <a href="#">See All</a>
+        </div> {% endcomment %}
+        </div>
+    </div>
+    <br>
+    <div class="sales-boxes" id="cat_edit_upadte_box" style="margin-bottom: 20px;">
+        
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script>
+        function getCategoryDetails(vech_id){
+            $.ajax({
+                type: "GET",
+                url: "/sub-html/vt-book/v1/curd-user?user_id="+vech_id,
+                data: {},
+                success: function (data) {
+                    $("#cat_edit_upadte_box").html(data)
+                    return false;
+                },
+                error: function (data) {
+                    alert("Internal Server Error!!!");
+                },
+            });
+        }
+
+        {% comment %} function removeParam(key, sourceURL) {
+            var rtn = sourceURL.split("?")[0],
+                param,
+                params_arr = [],
+                queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+            if (queryString !== "") {
+                params_arr = queryString.split("&");
+                for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+                    param = params_arr[i].split("=")[0];
+                    if (param === key) {
+                        params_arr.splice(i, 1);
+                    }
+                }
+                if (params_arr.length) rtn = rtn + "?" + params_arr.join("&");
+            }
+            return rtn;
+        }
+
+        $('#recent_sales').on('change', function() {
+            //alert(this.value);
+            var curl = window.location.href
+            var curl = removeParam("rf_status", curl);
+            if(this.value != "all"){
+                if(curl.includes("?")){
+                    curl = curl+"&rf_status="+this.value;
+                }else{
+                    curl = curl+"?rf_status="+this.value;
+                };
+            };
+            curl = curl.replace("#return_order_box","")
+            window.location.href = curl
+        });
+
+        function applydatefilter(){
+            var from_date = $("#from_date").val()
+            var to_date = $("#to_date").val()
+            if(from_date.length < 1){
+                alert("Please Select From Date")
+                return false;
+            }
+
+            if(to_date.length < 1){
+                alert("Please Select To Date")
+                return false;
+            }
+
+            if(to_date >= from_date){
+                var curl = window.location.href
+                var curl = removeParam("td", curl);
+                var curl = removeParam("fd", curl);
+                var curl = removeParam("page", curl);
+                if(curl.includes("?")){
+                    curl = curl+"&fd="+from_date+"&td="+to_date;
+                }else{
+                    curl = curl+"?fd="+from_date+"&td="+to_date;
+                }
+                window.location.href = curl
+            }else{
+                alert("To Date is Grater then From Date.")
+            }
+        } {% endcomment %}
+    </script>
+{% endblock content %}

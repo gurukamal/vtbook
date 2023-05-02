@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title>VT Dashboard</title>
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        tr{
+            text-align:center;
+        }
+    </style>
+    {% block css %}
+    {% endblock css %}
+   </head>
+<body>
+    
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}   
+    <div class="sidebar">
+            <div class="logo-details" style="background-color: white;"><span style="font-size: 35px;text-align: center;width: 100%;font-weight: bold;">VT Book</span>
+            {% comment %} <i class='bx bxl-c-plus-plus'></i> {% endcomment %}
+            {% comment %} <img src="{% static 'logo.png'%} " class='img-fluid'  alt="" style="height: 60px;width: 140px;margin-left: 35px;"> {% endcomment %}
+            {% comment %} <span class="logo_name"></span> {% endcomment %}
+            </div>
+            <div style="overflow-y: scroll;height: 100%;padding-bottom: 80px;">
+                <ul class="nav-links">
+                    <li><a href="/dashboard" class="{{dashboard}}"><i class='bx bx-grid-alt' ></i><span class="links_name">Dashboard</span></a></li>
+                    <li><a href="/ledger-list" class="{{order_list}}"><i class='bx bx-list-ul' ></i><span class="links_name" style="font-size: 13px">Vehicle Account Ledger</span></a></li>
+                    <li><a href="/vehicle-book" class="{{return_list}}"><i class='bx bx-book-alt' ></i><span class="links_name">Vehicle List</span></a></li>
+                    <li><a href="/company-book" class="{{gift_payment_log}}"><i class='bx bx-book' ></i><span class="links_name">Company List</span></a></li>
+                    <li><a href="/user-info" class="{{user}}"><i class='bx bx-user' ></i><span class="links_name">User</span></a></li>
+                    <br>
+                    <br> 
+                    <br>
+                    <br>
+                    <li class="log_out"><a href="/logout" class="{{active1}}" style="background-color: #2e61c1;"><i class='bx bx-log-out'></i><span class="links_name">Log out</span></a></li>
+                </ul>
+            </div>
+        </div> <!-- End Side Navebar -->
+        
+        <section class="home-section">
+            <nav>
+            <div class="sidebar-button">
+                <i class='bx bx-menu sidebarBtn'></i>
+                <span class="dashboard">{{page_title}}</span>
+            </div>
+            {% comment %} <div class="search-box">
+                <input type="text" placeholder="Search...">
+                <i class='bx bx-search' ></i>
+            </div> {% endcomment %}
+            <div class="profile-details">
+                <img src="{% static 'images/user.png' %}" alt="">
+                <span class="admin_name">{{request.user.first_name}}</span>
+                <i class='bx bx-chevron-down' ></i>
+            </div>
+            </nav>
+
+            <div class="home-content">
+                {% block content %}
+        
+                {% endblock content %}
+            </div>
+        </section>
+        <script>
+            document.body.style.zoom = "75%";
+            let sidebar = document.querySelector(".sidebar");
+            let sidebarBtn = document.querySelector(".sidebarBtn");
+            sidebarBtn.onclick = function() {
+                sidebar.classList.toggle("active");
+                if(sidebar.classList.contains("active")){
+                    sidebarBtn.classList.replace("bx-menu" ,"bx-menu-alt-right");
+                }else
+                    sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+            }
+        </script>
+        {% comment %} <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> {% endcomment %}
+    </body>
+</html>

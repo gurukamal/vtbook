@@ -1,0 +1,50 @@
+<div class="recent-sales box" style="width: 100%;">
+    <h5>Add New Transcation</h5>
+        <form method="" action="#">
+        {% csrf_token %}
+        <div class="sales-details" style="display: block;">
+            <div class="form-row">                
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" placeholder="" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Txn Mode</label>
+                    <select class="form-control selectpicker" id="txn_mode" name="txn_mode" data-live-search="true">
+                        {% for i in payment_mode_choice %}
+                            <option value="{{i.0}}">{{i.1}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Amount</label>
+                    <input type="number" class="form-control" id="amount" name="amount" placeholder="" required>
+                </div>
+                
+            </div>
+
+            <div class="form-row">                
+                <div class="col-md-12 mb-3">
+                    <label for="product_token">Remark</label>
+                    <input type="text" class="form-control" id="remark" name="remark" placeholder="" required>
+                </div>
+                
+            </div>
+
+            <div class="form-row">                
+                <div class="col-md-12 mb-3" style="display: flex;">
+                    <input type="radio" id="debit" name="fav_language" value="2" style="margin-bottom: 0px;">
+                    <label style="margin-bottom: 0px;margin-left: 3px;" for="debit">Debit (Expense)</label><br>
+                    <input type="radio" id="credit" name="fav_language" value="1" style="margin-left: 25px;">
+                    <label style="margin-bottom: 0px;margin-left: 3px;" for="credit">Credit (Add Fund)</label><br>
+                </div>
+                
+            </div>
+
+            
+            <p id="errorMsg" style="color: red;">Error: All field required</p>
+            <p id="errorMsg2" style="color: red;">Error: Please Select Transcation Type.</p>
+            <button class="btn btn-primary" type="button" onclick="saveNewTxnDetails()">Save</button>
+        </div>
+    </form>
+</div>

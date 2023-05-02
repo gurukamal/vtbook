@@ -1,0 +1,133 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+        <title>Hello, world!</title>
+    </head>
+    <body style="margin: 10px 10px 10px 10px;border: 1px solid;">
+        <div style="display: flex;justify-content: flex-end;" id="cmd">
+            <button type="button" class="btn btn-success" style="height: 25px;font-size: 15px;border-radius: 3px;margin: 2px 2px 0px 0;padding-top: 0;"> 
+                <a href="javaScript:void(0)" onclick="printPage()" style="color:white;"> Print</a>
+            </button>
+        </div>
+        <div class="text-center">
+            {% comment %} <img src="https://goognu.com/static/images/logo.png" class="rounded" alt="logo" style="height: 60px;margin-top: 20px;"> {% endcomment %}
+            <img src="{% static 'images/vtlogo.png' %}" class="rounded" alt="logo" style="height: 60px;margin-top: 20px;">
+        </div>
+        <div style="display: flex;justify-content: center;margin-top: 25px;"> 
+            {% comment %} <h4>Report Summary</h4> {% endcomment %}
+            <table class="table table-sm col-md-5">
+                <tbody>
+                    <tr>
+                        <td>Vehcile Number</td>
+                        <td>:</td>
+                        <td>{{vehicle_obj.vehicle.vehicle_number}}</td>
+                    </tr>
+                    <tr>
+                        <td>Company Name</td>
+                        <td>:</td>
+                        <td>{{vehicle_obj.company.company_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Credit Amount</td>
+                        <td>:</td>
+                        <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                            <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                          </svg> {{total_txn_amount}}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Expense Amount</td>
+                        <td>:</td>
+                        <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                            <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                          </svg> {{total_txn_amount_dbt}}</td>
+                    </tr>
+                    <tr>
+                        <td>Balance</td>
+                        <td>:</td>
+                        <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                            <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                          </svg> {{balance}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin: 50px 45px 0 45px;">
+            <p>Report Genrated From: <span><b>{{sd}}</b></span><span> To: <b>{{ed}}</b></span></p>
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr style="text-align:center">
+                        <th scope="col">#</th>
+                        {% comment %} <th scope="col">Added on </th> {% endcomment %}
+                        <th scope="col">Txn Date</th>
+                        <th scope="col">Txn Mode</th>
+                        <th scope="col">Txn Type</th>
+                        <th scope="col">Dr Amount</th>
+                        <th scope="col">Cr Amount</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">Remark</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in paymentLogObj %}
+                        <tr style="text-align:center;">
+                            <th scope="row">{{forloop.counter}}</th>
+                            {% comment %} <td scope="row">{{i.create_at}}</td> {% endcomment %}
+                            <td>{{i.date}}</td>
+                            <td>{{i.get_mode_display}}</td>
+                            <td>{{i.get_type_display}}</td>
+                            {% if i.dbt_amount == 0.0 %}
+                                <td>--</td>
+                            {% else %}
+                                <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                    <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                                  </svg> {{i.dbt_amount}}</td>
+                            {% endif %}
+                            {% if i.crt_amount == 0.0 %}
+                                <td>--</td>
+                            {% else %}
+                                <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                    <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                                  </svg> {{i.crt_amount}}</td>
+                            {% endif %}
+                            <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                              </svg> {{i.balance}}</td>
+                            <td>{{i.remark}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+        <div>
+
+
+        <!-- Optional JavaScript; choose one of the two! -->
+
+        <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
+        <!-- Option 2: Separate Popper and Bootstrap JS -->
+        <!--
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+        -->
+        <script>
+            function printPage(){
+                //$("#cmd").hide()
+                window.print($("#cmd").hide());
+                $("#cmd").show()
+            }
+        </script>
+    </body>
+</html>

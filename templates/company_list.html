@@ -1,0 +1,144 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block css %}
+    <style>
+        .home-content .sales-boxes .recent-sales {
+            width: 100%;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block content %}
+    <div class="sales-boxes">
+        <div class="recent-sales box">
+        <div class="title" style="display: flex;justify-content: space-between;">
+            <div>Company List <span style="margin-left: 55px;" onclick="getCategoryDetails(0)"><a href="#"> +Add New Company </a></div>
+            <div style="display:flex;">
+                {% comment %} <form style="display: flex;" action="" method="GET">
+                    <input type="text" class="form-control" name="order_id" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;    margin-left: -15px;" {% if order_id %} value="{{order_id}}"  {% else %} value="order_" {% endif %} >
+                    <button type="submit" hidden></button>
+                </form>
+                <div>
+                    <select class="form-control" id="recent_sales" name="recent_sales" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                        <option value="" disabled>Select Status</option>
+                        <option value="all" {% if not request.GET.rf_status == "" %}selected{% endif %}>All</option>
+                        <option value="3" {% if request.GET.rf_status == "3" %}selected{% endif %}>Confirmed</option>
+                        <option value="1" {% if request.GET.rf_status == "1" %}selected{% endif %}>Received</option>
+                    </select>
+                </div> {% endcomment %}
+                
+                <form style="display:flex;padding-top: 3px;margin-left: 15px;" method="GET" action="/company-book">
+                    <span style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">From </span><input required type="date" name="from_date" id="from_date" class="form-control" value="{{fd|date:'Y-m-d'}}" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                    <span style="height: 30px;font-size: 15px;padding-left: 20px;padding-right: 5px;width: 65%;">To </span><input required type="date" name="to_date" id="to_date" class="form-control" value="{{td|date:'Y-m-d'}}"  style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                    <button type="submit" class="btn btn-primary" style="margin-left: 15px;margin-right: 10px;height: 30px;font-size: 15px;padding-top: 2px;" onclick="applydatefilter()">Apply</button>
+                </form>
+
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="margin-left: 15px;margin-right: 10px;height: 30px;font-size: 15px;padding-top: 2px;">Search</button>
+                </form>
+                  
+            </div>
+        </div>
+        <div class="sales-details">
+            
+            <table class="table table-sm table-bordered table-hover">
+                <thead>
+                    <tr style="text-align:center">
+                        <th scope="col">Sr No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Company Name</th>
+                        <th scope="col">Company Address</th>
+                        <th scope="col">Added By</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in compRegObj %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td scope="row">{{i.create_at}}</td>
+                           
+                            <td>{{i.company_name}}</td>
+                            <td>{{i.company_address}}</td>
+                            <td>{{i.user}}</td>
+                            <td>
+                                <a href="#" onclick="getCategoryDetails('{{i.id}}')">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="" style="position: inherit;justify-content: flex-end;width:100%;">
+            <ul class="pagination">
+                {% if order.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" tabindex="-1">First</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript:void(0)" tabindex="-1">First</a>
+                    </li>
+                {% endif %}
+
+                {% for i in order.paginator.page_range %}
+                    {% if order.number == i %}
+                        <li class="page-item">
+                            <a href="" class="page-link" style="background-color: #424299c9;color: white;">{{i}}</a>
+                        </li>
+                    {% elif i > order.number|add:'-5' and i < order.number|add:'5' %}
+                        <li class="page-item">
+                            <a href="?{{ request.GET.urlencode }}&page={{i}}" class="page-link" >{{i}}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if order.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{order.paginator.num_pages}}">Last</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript:void(0)">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+        {% comment %} <div class="button">
+            <a href="#">See All</a>
+        </div> {% endcomment %}
+        </div>
+    </div>
+    <br>
+    <div class="sales-boxes" id="cat_edit_upadte_box" style="margin-bottom: 20px;">
+        
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script>
+        function getCategoryDetails(vech_id){
+            $.ajax({
+                type: "GET",
+                url: "/sub-html/vt-book/v1/curd-company-form?company_id="+vech_id,
+                data: {},
+                success: function (data) {
+                    $("#cat_edit_upadte_box").html(data)
+                    return false;
+                },
+                error: function (data) {
+                    alert("Internal Server Error!!!");
+                },
+            });
+        }
+
+         
+    </script>
+{% endblock content %}

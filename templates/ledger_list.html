@@ -1,0 +1,283 @@
+{% extends 'base_dashboard.html' %}
+{% load custom_tag %}
+{% load static %}
+
+{% block css %}
+    <style>
+        .home-content .sales-boxes .recent-sales {
+            width: 100%;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block content %}
+{% comment %} <form style="display:flex;float:right;margin-left: 15px;" method="GET" action="/ledger-list">
+    <input class="form-control mr-sm-2" type="search" value="{% if search %}{{search}}{% endif %}" placeholder="Search" aria-label="Search" name="search" id="search" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"  style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">Search</button>
+</form> {% endcomment %}
+
+    <div class="sales-boxes" style="margin-bottom: 20px;" id="downloadReportSection">
+        <div class="recent-sales box">
+            <form method="GET" action="/show-report"  target="_blank">
+                <div class="row">
+                    <div class="col-md-2">
+                        <span style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">From Date</span>
+                        <input  type="date" name="from_date" id="from_date" class="form-control" style="">
+
+                    </div>
+                    <div class="col-md-2">
+                        <span style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">To Date</span>
+                        <input  type="date" name="to_date" id="to_date" class="form-control" style="">
+
+                    </div>
+
+                    <div class="col-md-3">
+                        <span style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">Vehcile Number*</span>
+                        <select required class="form-control" id="" name="vehicle" style="">
+                            <option value="">Select Vehcile</option>
+                            {% for i in vichle_obj %}
+                                <option value="{{i.id}}">{{i.vehicle_number}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <span style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">Company</span>
+                        <select class="form-control" id="" name="company" style="">
+                            <option value="all" selected disabled>Select Company</option>
+                            {% for i in company_obj %}
+                                <option value="{{i.id}}" >{{i.company_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row" style="display: flex;justify-content: flex-end;">
+                    <button type="submit" class="btn btn-primary" onclick="downloadBtn()" style="margin-left: 15px;height: 30px;font-size: 15px;padding-top: 2px;">Genrate Report/Download</button>
+                </div> 
+            </form>
+        </div> 
+    </div>
+
+    <div class="sales-boxes" id="cat_edit_upadte_box" style="margin-bottom: 20px;margin-right: 40px;justify-content: flex-end;">
+        {% comment %} <a href="javaScript:void(0)" onclick="downloadBtn()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-pdf" viewBox="0 0 16 16">
+            <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+            <path d="M4.603 12.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.701 19.701 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.187-.012.395-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.065.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.716 5.716 0 0 1-.911-.95 11.642 11.642 0 0 0-1.997.406 11.311 11.311 0 0 1-1.021 1.51c-.29.35-.608.655-.926.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.27.27 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.647 12.647 0 0 1 1.01-.193 11.666 11.666 0 0 1-.51-.858 20.741 20.741 0 0 1-.5 1.05zm2.446.45c.15.162.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.881 3.881 0 0 0-.612-.053zM8.078 5.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z"/>
+          </svg>Download PDF</a> {% endcomment %}
+    </div>
+    
+    <div class="sales-boxes">
+        <div class="recent-sales box">
+        <div class="title" style="display: flex;justify-content: space-between;margin-bottom: 12px;">
+            <div>Vehicle Account Balance Sheet <span style="margin-left: 10px;font-size: 15px;" onclick="getCategoryDetails(0)"><a href="#"> +Add New Ledger </a></div>
+                {% comment %} <form style="display:flex;float:right;margin-left: 15px;" method="GET" action="/ledger-list">
+                    <input class="form-control mr-sm-2" type="search" value="{% if search %}{{search}}{% endif %}" placeholder="Search" aria-label="Search" name="search" id="search" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"  style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">Search</button>
+                </form> {% endcomment %}
+            <div style="display:flex;">
+                <div>
+                    <select class="form-control" id="vehicle" name="vehicle" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                        <option value="all" {% if not request.GET.rf_status == "" %}selected{% endif %} disabled>Select Vehcile {{vehicle}}</option>
+                        {% for i in vichle_obj %}
+                            <option value="{{i.id}}" {% if vehicle == i.id %} selected {% endif %}>{{i.vehicle_number}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-left: 5px;">
+                    <select class="form-control" id="company" name="company" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                        <option value="all" {% if not request.GET.rf_status == "" %}selected{% endif %} disabled>Select Company</option>
+                        {% for i in company_obj %}
+                            <option value="{{i.id}}" {% if company == i.id %} selected {% endif %}>{{i.company_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <form style="display:flex;background-color: gainsboro;padding-top: 3px;margin-left: 15px;" method="GET" action="/ledger-list">
+                    <span style="height: 30px;font-size: 15px;padding-left: 20px;width: 65%;">From</span>
+                    <input required type="date" name="from_date" id="from_date" class="form-control" value="{{from_date|date:"Y-m-d" }}" style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                    
+                    <span style="height: 30px;font-size: 15px;padding-left: 20px;padding-right: 5px;width: 65%;">To </span>
+                    <input required type="date" name="to_date" id="to_date" class="form-control" value="{{to_date|date:"Y-m-d" }}"  style="height: 30px;padding: 0px;margin: 0;font-size: 15px;padding-left: 20px;padding-right: 20px;">
+                    <button type="submit" class="btn btn-primary" style="margin-left: 15px;height: 30px;font-size: 15px;padding-top: 2px;" onclick="applydatefilter()">Apply</button>
+                </form>
+            </div>
+        </div>
+        
+        
+
+        <div class="sales-details">
+            <table class="table table-sm table-bordered table-hover">
+                <thead>
+                    <tr style="text-align:center">
+                        <th scope="col">Sr No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">vehicle Number</th>
+                        <th scope="col">Driver Name</th>
+                        <th scope="col">Company Name</th>
+                        <th scope="col">Added By</th>
+                        {% comment %} <th scope="col">Total amount</th> {% endcomment %}
+                        <th scope="col">Balance</th>
+                        {% comment %} <th scope="col">Pending amount</th> {% endcomment %}
+                        <th scope="col">Remark</th>
+                        <th scope="col">Action</th>
+                        {% comment %} <th scope="col">Action</th> {% endcomment %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in ledgerObj %}
+                            {% comment %} {% caluculate i.id as rlistdata%} {% endcomment %}
+                            {% find_remark i.id as remark%}
+                        <tr {% if i.balance <= 0 %} style="background-color: #e600009c;" {% else %} style="background-color: #30c0309e;" {% endif %}>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td scope="row">{{i.date}}</td>
+                            <td>{{i.vehicle.vehicle_number}}</td>
+                            <td>{{i.vehicle.driver_name}}</td>
+                            <td>{{i.company.company_name}}</td>
+                            <td>{{i.user.first_name}}</td>
+                            {% comment %} <td>{{i.total_amount}}</td> {% endcomment %}
+                            {% comment %} <td>{{rlistdata.0}}</td> {% endcomment %}
+                            <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z"/>
+                              </svg> {{i.balance}}</td>
+                            <td>{{remark.remark}}</td>
+                            <td>
+                                <a href="#" style="color: white;" onclick="location.href='{% url 'update_ledger_record' i.uuid %}'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                  </svg> Edit</a>
+                            </td>
+                            {% comment %} <td>
+                                <form method="POST" action="{% url 'delete_ledger_record' ledger_id=i.uuid %}">
+                                    {% csrf_token %}
+                                    <input type="submit" class="btn btn-danger" value="Delete">
+                                </form>
+                            </td> {% endcomment %}
+                            
+                            
+                              
+                            <!-- <td>
+                                <a href="/ledger-details/{{i.uuid}}">Edit</a>
+                            </td> -->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="" style="position: inherit;justify-content: flex-end;width:100%;">
+            <ul class="pagination">
+                {% if order.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" tabindex="-1">First</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript:void(0)" tabindex="-1">First</a>
+                    </li>
+                {% endif %}
+
+                {% for i in order.paginator.page_range %}
+                    {% if order.number == i %}
+                        <li class="page-item">
+                            <a href="" class="page-link" style="background-color: #424299c9;color: white;">{{i}}</a>
+                        </li>
+                    {% elif i > order.number|add:'-5' and i < order.number|add:'5' %}
+                        <li class="page-item">
+                            <a href="?{{ request.GET.urlencode }}&page={{i}}" class="page-link" >{{i}}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if order.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{order.paginator.num_pages}}">Last</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript:void(0)">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+        {% comment %} <div class="button">
+            <a href="#">See All</a>
+        </div> {% endcomment %}
+        </div>
+    </div>
+    <br>
+    
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script>
+        function getCategoryDetails(){
+            $.ajax({
+                type: "GET",
+                url: "/sub-html/vt-book/v1/add-new-vehicle-ledger",
+                data: {},
+                success: function (data) {
+                    $("#cat_edit_upadte_box").html(data)
+                    return false;
+                },
+                error: function (data) {
+                    alert("Internal Server Error!!!");
+                },
+            });
+        }
+
+        function removeParam(key, sourceURL) {
+            var rtn = sourceURL.split("?")[0],
+                param,
+                params_arr = [],
+                queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+            if (queryString !== "") {
+                params_arr = queryString.split("&");
+                for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+                    param = params_arr[i].split("=")[0];
+                    if (param === key) {
+                        params_arr.splice(i, 1);
+                    }
+                }
+                if (params_arr.length) rtn = rtn + "?" + params_arr.join("&");
+            }
+            return rtn;
+        }
+
+        $('#vehicle').change(function () { 
+            var vehicle = $(this).val()
+            //alert(vehicle)
+            var url = document.location.href
+            url = removeParam("vehicle", url);
+            if(url.indexOf("?") > -1) {
+                var url = url+"&vehicle="+vehicle;
+                document.location = url;
+            }else{
+                var url = url+"?vehicle="+vehicle;
+                document.location = url;
+            }
+        });
+
+        $('#company').change(function () { 
+            var company = $(this).val()
+            //alert(company)
+            var url = document.location.href
+            url = removeParam("company", url);
+            if(url.indexOf("?") > -1) {
+                var url = url+"&company="+company;
+                document.location = url;
+            }else{
+                var url = url+"?company="+company;
+                document.location = url;
+            }
+        });
+        
+        $("#downloadReportSection").hide()
+
+        function downloadBtn(){
+            $("#downloadReportSection").show()
+        }
+    </script>
+{% endblock content %}

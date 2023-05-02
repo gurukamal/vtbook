@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" >
+    <head>
+        <meta charset="UTF-8">
+        <title>VT Book</title>
+        <link href="https://fonts.googleapis.com/css?family=Asap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'dashboard/login_style.css' %}">
+    </head>
+    <body>
+        <!-- partial:index.partial.html -->
+        <form class="login" method="POST" action="/">
+            {% csrf_token %}
+            <input type="text" placeholder="Username" required name="uname">
+            <input type="password" placeholder="Password" required name="psw">
+            <button type="submit">Login</button>
+        </form>
+    </body>
+</html>

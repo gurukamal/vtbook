@@ -1,0 +1,24 @@
+<div class="recent-sales box" style="width: 100%;">
+    <h5>{% if compRegUpdateObj %} Update for <b><u>{{compRegUpdateObj.company_name}}</u></b> {% else %} Create New {% endif %}</h5>
+    {% if compRegUpdateObj %}
+        <form method="POST" action="/update-company-record/{{compRegUpdateObj.id}}">
+    {% else %}
+        <form method="POST" action="/create-new-company-record">
+    {% endif %}
+        {% csrf_token %}
+        <div class="sales-details" style="display: block;">
+            <div class="form-row">                
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Company Name</label>
+                    <input type="text" class="form-control" id="company_name" name="company_name" placeholder="xyz" value="{{compRegUpdateObj.company_name}}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="product_token">Company Address</label>
+                    <input type="text" class="form-control" id="company_address" name="company_address" placeholder="abcd" value="{{compRegUpdateObj.company_address}}" required>
+                </div>
+                
+            </div>
+            <button class="btn btn-primary" type="submit">{% if compRegUpdateObj %} Update {% else %}Save {% endif %}</button>
+        </div>
+    </form>
+</div>
